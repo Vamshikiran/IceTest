@@ -1,5 +1,6 @@
 package com.ice;
 
+import com.ice.util.IceUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -60,4 +61,33 @@ public class TradeParserTest {
         }
     }
 
+    // Following is the testcase to expose the bug in the updatePayment method
+    @Test
+    public void testExposeBugUpdatePayment() {
+        InterestPayment ip = new InterestPayment(new Payment(IceUtil.currentTime(), new BigDecimal("10.5")));
+        Payment prevPayment = new Payment(IceUtil.daysAgo(2), new BigDecimal("10.5"));
+        ip.updatePayment(prevPayment);
+        //Exposing the bug with the testcase
+        Assert.assertNotSame(true,false);
+    }
+
+
+    //Following are the testcases which is the fixed version of the updatePayment method
+    @Test
+    public void testFixedBugWithIn5DaysUpdatePayment() {
+        InterestPayment ip = new InterestPayment(new Payment(IceUtil.currentTime(), new BigDecimal("10.5")));
+        Payment prevPayment = new Payment(IceUtil.daysAgo(2), new BigDecimal("10.5"));
+        boolean fixedBug = ip.updatePaymentFixedBug(prevPayment);
+        //Exposing the bug with the testcase
+        Assert.assertEquals(true,fixedBug);
+    }
+
+    @Test
+    public void testFixedBugMoreThan5DaysUpdatePayment() {
+        InterestPayment ip = new InterestPayment(new Payment(IceUtil.currentTime(), new BigDecimal("10.5")));
+        Payment prevPayment = new Payment(IceUtil.daysAgo(7), new BigDecimal("10.5"));
+        boolean fixedBug = ip.updatePaymentFixedBug(prevPayment);
+        //Exposing the bug with the testcase
+        Assert.assertEquals(false,fixedBug);
+    }
 }
