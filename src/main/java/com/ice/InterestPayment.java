@@ -12,6 +12,12 @@ public class InterestPayment {
     public InterestPayment(Payment currentPayment) {
         this.currentPayment = currentPayment;
 
+
+
+
+
+
+
     }
 
     /**
